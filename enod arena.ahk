@@ -36,9 +36,6 @@ abilityCount :=0
 vazarinTimer :=0
 khoraCageTimer := 0
 
-khoraMode:= 0
-
-
 SoundPlay, mixkit-correct-answer-tone-2870.wav ;relative path from the script file, add C:\Users\YourNameHere\Documents\ in front for an absolute path
 
 Loop{ ;Events, PLAY SOUND
