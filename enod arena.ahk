@@ -5,7 +5,7 @@
 abilityOne := "1"
 abilityFour := ;You have to manually edit the hotkey line 190 if you're using an other key than '4' for ability 4
 operatorTransference := "5"
-running := "Shift"
+sprint := "Shift"
 sliding := "Ctrl"
 jump := "space" 
 melee := "e" 
@@ -139,7 +139,7 @@ return
 		Sleep, 500 ;extra delay when melee spamming to let the current melee animation finish
 	}
 
-	Send, {Blind}{%running% down} ;this key is never released, I also use that bullet jump hotkey as my hold down run trigger. idk I'm weird
+	Send, {Blind}{%sprint% down} ;this key is never released, I also use that bullet jump hotkey as my hold down run trigger. idk I'm weird
 	Send, {Blind}{%sliding% down}
 	Sleep, 110
 	Send, {Blind}{%jump%}
@@ -150,9 +150,11 @@ return
 	busy := 0
 return
 
+~*LWin::
+~*RWin::
 ~+!TAB::
 ~*t::
-	Send, {Blind}{%running% up} ;release Shift when opening chat or alt tabbing
+	Send, {Blind}{%sprint% up} ;release Shift when opening chat, alt tabbing, pressing Windows key
 return
 
 ~*WheelDown:: ;VAZARIN SLING
@@ -165,7 +167,7 @@ return
 	}
 	busy := 1
 	
-	Send, {Blind}{%running% up}
+	Send, {Blind}{%sprint% up}
 	Send, {Blind}%operatorTransference%
 	Send, {Blind}{s down}
 	Sleep, 150
@@ -182,7 +184,7 @@ return
 	;Send, {Blind}{%melee%} ;melee to exit operator mode is faster if you got a decent melee attack speed 
 	Send, {Blind}%operatorTransference% 
 	Sleep, 500
-	Send, {Blind}{%running% down}			
+	Send, {Blind}{%sprint% down}			
 
 	busy := 0
 return
