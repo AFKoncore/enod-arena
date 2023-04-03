@@ -14,7 +14,7 @@ melee := "e"
 ;TIMERS - edit to match your ability duration on khora / Vazarin Sling level
 khoraCageDuration := 45  -5  ;how long in seconds will your cage last minus how many seconds before expiry do you want to be warned
 vazarinSlingDuration := 5  -1.9  ;max rank is 5s. 
-
+khoraMode:= 0  ;change to 1 if you prefer the script to start with the Khora mode enabled without pressing F10
 
 ;SCRIPT KEYBINDS:
 ;Mouse wheel up: Bullet Jump
@@ -36,10 +36,7 @@ abilityCount :=0
 vazarinTimer :=0
 khoraCageTimer := 0
 
-warframeMode:= 0
-; 0 - None
-; 1 - Vazarin Khora
-warframeCount := 1
+khoraMode:= 0
 
 
 SoundPlay, mixkit-correct-answer-tone-2870.wav ;relative path from the script file, add C:\Users\YourNameHere\Documents\ in front for an absolute path
@@ -89,14 +86,10 @@ return
 ; ~ will let the original input pass throught (so ~e:: will execute the hotkey AND type out 'e')
 
 *F10::	;WARFRAME MODE SWAP	
-	global warframeMode  
-	global warframeCount
+	global khoraMode  
 	
-	warframeMode := warframeMode +1
-	if(warframeMode > warframeCount){
-		warframeMode := 0
-	}
-	Switch warframeMode{
+	khoraMode := !khoraMode
+	Switch khoraMode{
 			case 0:
 				Progress, B Y50 ZH0 CW000000 CT808080, Khora mode OFF
 			case 1:			
@@ -162,7 +155,7 @@ return
 	global vazarinSlingDuration
 	global vazarinTimer
 	
-	if(busy || warframeMode !=1){
+	if(busy || khoraMode !=1){
 		return
 	}
 	busy := 1
@@ -189,11 +182,11 @@ return
 
 ;~'::   ;remove the first ';' if you're using an AZERTY keyboard
 ~4:: 
-	global warframeMode
+	global khoraMode
 	global khoraCageDuration
 	global khoraCageTimer
 	
-	if(warframeMode == 1){ ;Khora's cage	
+	if(khoraMode == 1){ ;Khora's cage	
 		khoraCageTimer := A_TickCount + khoraCageDuration*1000 
 	}
 return
