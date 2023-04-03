@@ -3,7 +3,7 @@
 
 ;IN-GAME KEYBINDS - edit those so they match with your in-game keybind. Check https://www.autohotkey.com/docs/v1/KeyList.htm if you're unsure of the name of a key
 abilityOne := "1"
-abilityFour := ;You have to manually edit the hotkey line 190 if you're using an other key than '4' for ability 4
+abilityFour := ;You have to manually edit the hotkey line 193 if you're using an other key than '4' for ability 4
 operatorTransference := "5"
 sprint := "Shift"
 sliding := "Ctrl"
