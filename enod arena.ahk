@@ -3,7 +3,7 @@
 
 ;IN-GAME KEYBINDS - edit those so they match with your in-game keybind. Check https://www.autohotkey.com/docs/v1/KeyList.htm if you're unsure of the name of a key
 abilityOne := "1"
-abilityFour := ;You have to manually edit the hotkey line 193 if you're using an other key than '4' for ability 4
+abilityFour := ;You have to manually edit the hotkey line 191 if you're using an other key than '4' for ability 4
 operatorTransference := "5"
 sprint := "Shift"
 sliding := "Ctrl"
@@ -167,7 +167,6 @@ return
 	}
 	busy := 1
 	
-	Send, {Blind}{%sprint% up}
 	Send, {Blind}%operatorTransference%
 	Send, {Blind}{s down}
 	Sleep, 150
@@ -183,8 +182,7 @@ return
 	Sleep, 100			
 	;Send, {Blind}{%melee%} ;melee to exit operator mode is faster if you got a decent melee attack speed 
 	Send, {Blind}%operatorTransference% 
-	Sleep, 500
-	Send, {Blind}{%sprint% down}			
+	Sleep, 500		
 
 	busy := 0
 return
