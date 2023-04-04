@@ -1,15 +1,15 @@
 ;Script by Xampa5 / Core#1460
 ;uses AHK 1.1
+;check https://github.com/AFKoncore/enod-arena for potential updates
 
 ;IN-GAME KEYBINDS - edit those so they match with your in-game keybind. Check https://www.autohotkey.com/docs/v1/KeyList.htm if you're unsure of the name of a key
 abilityOne := "1"
-abilityFour := ;You have to manually edit the hotkey line 191 if you're using an other key than '4' for ability 4
+abilityFour := ;You have to manually edit the hotkey if you're using an other key than '4' for ability 4, edit the line ~4:: at the beginning of the last paragraph of this script
 operatorTransference := "5"
 sprint := "Shift"
 sliding := "Ctrl"
 jump := "space" 
 melee := "e" 
-
 
 ;TIMERS - edit to match your ability duration on khora / Vazarin Sling level
 khoraCageDuration := 45  -5  ;how long in seconds will your cage last minus how many seconds before expiry do you want to be warned
@@ -44,12 +44,12 @@ Loop{ ;Events, PLAY SOUND
 	
 	loopDelay := 2000
 	
-	;That shit below is ugly and will spaghettify exponentially the more cooldowns you track, but that's what you get when coding without sleep
+	;The stuff below is ugly and will spaghettify exponentially the more cooldowns you track, but that's what you get when coding without sleep
 	;TODO: Use array and sorting instead, I've happily saved myself from ever looking at how AHK decided to handle array so far
 	
 	;A_TickCount is the number of miliseconds since the script started
 	
-	if(vazarinTimer>0&&(khoraCageTimer==0||vazarinTimer<khoraCageTimer)){ ;If next timer to expire is this abilityOne (vazarin sling)
+	if(vazarinTimer>0 && (khoraCageTimer==0||vazarinTimer<khoraCageTimer)){ ;If next timer to expire is this one (vazarin sling)
 		if(vazarinTimer-A_TickCount<loopDelay){
 			Sleep, vazarinTimer-A_TickCount
 			if(vazarinTimer < A_TickCount+50){			
@@ -58,7 +58,7 @@ Loop{ ;Events, PLAY SOUND
 			}
 		}
 	}
-	if(khoraCageTimer >0&&(vazarinTimer==0||khoraCageTimer<vazarinTimer)){ ;If next timer to expire is this abilityOne (cage)
+	if(khoraCageTimer>0 && (vazarinTimer==0||khoraCageTimer<vazarinTimer)){ ;If next timer to expire is this one (cage)
 		if(khoraCageTimer-A_TickCount<loopDelay){
 			Sleep, khoraCageTimer-A_TickCount
 			if(khoraCageTimer < A_TickCount+50){			
@@ -79,8 +79,52 @@ return
 
 #ifWinActive, ahk_exe Warframe.x64.exe ;Hotkeys below will only trigger if Warframe is the active window
 ; * means run with any modifier key
-; + is shit, ! is alt, ^ is ctrl
-; ~ will let the original input pass throught (so ~e:: will execute the hotkey AND type out 'e')
+; + is shift, ! is alt, ^ is ctrl
+; ~ will let the original input pass throught (so ~e:: will execute the hotkey AND type 'e')
+
+*F8:: Reload 
+
+*F1:: ;SPRING WELL ZENURIK, need to be host for it to work on the 1st time on a new map
+	global busy
+	if(busy){
+		return
+	}
+	busy := 1
+	
+	Send, {Blind}{%operatorTransference%}  ;the {Blind} in front tells AHK to ignore the current modifier keys state, otherwise I think it tends to sends unwanted phantom shift or alt inputs. stolen from Zaw PT script
+	Sleep, 150	
+	Send, {Blind}{%abilityOne%}
+	Sleep, 350
+	Send, {Blind}{%operatorTransference%}
+	busy := 0
+	
+	Sleep, 400
+	if GetKeyState("F1","p") {		
+		Send, {Blind}{F1}
+	}
+	
+	busy := 0
+return
+	
+~*F9:: ;Nekros melee spam - won't work if Warframe is not the foreground window, didn't felt like fiddling with CtrlSendInput and test how Wf reacts to it (yet)
++!e:: ;Shift+Alt+E
+	global meleeSpam
+	if (meleeSpam){
+		return
+	}
+	meleeSpam :=1
+	
+	while (meleeSpam){		
+		while GetKeyState("Shift","p"){ ;not sure if that part is useful
+			Sleep, 50
+		}
+		if(!GetKeyState("Alt","p")&&!busy){	 ;I got noidea why but alt screw things up 
+			Send, {Blind}{%melee%}	
+		}			
+		Random, randomDelay, 100, 150  ;idk how fast you need to spam to fully use stacked up Berserker Fury + Arcane Strike + eventual Riven AS, this is likely fast enough tho
+		Sleep, randomDelay
+	}
+return
 
 *F10::	;WARFRAME MODE SWAP	
 	global khoraMode  
@@ -97,27 +141,6 @@ return
 	Progress, OFF
 return
 
-*F1:: ;SPRING WELL ZENURIK, need to be host for it to work on the 1st time on new map
-	global busy
-	if(busy){
-		return
-	}
-	
-	Send, {Blind}%operatorTransference%  ;the {Blind} in front of the tells AHK to ignore the current modifier keys state, otherwise I think it tends to sends unwanted phantom shift or alt inputs. stolen from Zaw PT script
-	Sleep, 150	
-	Send, {Blind}%abilityOne%
-	Sleep, 350
-	Send, {Blind}%operatorTransference%
-	busy := 0
-	
-	Sleep, 400
-	if GetKeyState("F1","p") {		
-		Send, {Blind}F1	
-	}
-return
-
-*F8:: Reload 
-
 ~*WheelUp:: ;BULLET JUMP
 	global busy	
 	if(busy){
@@ -129,7 +152,7 @@ return
 		Sleep, 500 ;extra delay when melee spamming to let the current melee animation finish
 	}
 
-	Send, {Blind}{%sprint% down} ;this key is never released, I also use that bullet jump hotkey as my hold down run trigger. idk I'm weird
+	Send, {Blind}{%sprint% down} ;this key is never released, I also use that bullet jump hotkey to hold down sprint. idk I'm weird
 	Send, {Blind}{%sliding% down}
 	Sleep, 110
 	Send, {Blind}{%jump%}
@@ -157,7 +180,7 @@ return
 	}
 	busy := 1
 	
-	Send, {Blind}%operatorTransference%
+	Send, {Blind}{%operatorTransference%}
 	Send, {Blind}{s down}
 	Sleep, 150
 	Send, {Blind}{%jump%}
@@ -171,7 +194,7 @@ return
 	Send, {Blind}{%sliding% up}				
 	Sleep, 100			
 	;Send, {Blind}{%melee%} ;melee to exit operator mode is faster if you got a decent melee attack speed 
-	Send, {Blind}%operatorTransference% 
+	Send, {Blind}{%operatorTransference%}
 	Sleep, 500		
 
 	busy := 0
@@ -188,25 +211,3 @@ return
 	}
 return
 
-
-
-	
-~*F9:: ;Nekros melee spam - won't work if Warframe is not the foreground window, didn't felt like fiddling with CtrlSendInput and test how Wf reacts to it (yet)
-+!e:: ;Shift+Alt+E
-	global meleeSpam
-	if (meleeSpam){
-		return
-	}
-	meleeSpam :=1
-	
-	while (meleeSpam){		
-		while GetKeyState("Shift","p"){ ;not sure if that part is useful
-			Sleep, 50
-		}
-		if(!GetKeyState("Alt","p")&&!busy){	 ;I got noidea why but alt fucks things up 
-			Send, {Blind}{%melee%}	
-		}			
-		Random, randomDelay, 100, 150  ;idk how fast you need to spam to fully use stacked up Berserker Fury + Arcane Strike + eventual Riven AS, this is likely fast enough tho
-		Sleep, randomDelay
-	}
-return
